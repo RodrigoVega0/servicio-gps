@@ -9,202 +9,685 @@
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      color: #000;
-      margin: 0;
-      padding: 10px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #000080;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    form {
-      background: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
       padding: 20px;
-      border-radius: 8px;
-      max-width: 900px;
-      margin: auto;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .header h1 {
+      color: #000080;
+      font-size: clamp(28px, 5vw, 36px);
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header p {
+      color: #666;
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
     }
 
     label {
-      font-weight: bold;
-      margin-bottom: 4px;
-      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #2c3e50;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 15px;
+      border: 2px solid #e1e8ed;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #fff;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #000080;
+      box-shadow: 0 0 0 4px rgba(0, 0, 128, 0.1);
+      transform: translateY(-2px);
+    }
+
+    input:hover, select:hover, textarea:hover {
+      border-color: #34495e;
     }
 
     textarea {
-      height: 60px;
+      height: 100px;
       resize: vertical;
+      font-family: inherit;
+    }
+
+    .file-input-container {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-input {
+      position: absolute;
+      left: -9999px;
+    }
+
+    .file-input-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      background: linear-gradient(135deg, #74b9ff, #0984e3);
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none;
+    }
+
+    .file-input-label:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(116, 185, 255, 0.4);
     }
 
     .photo-preview {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
-      gap: 10px;
-      margin-top: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .photo-item {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .photo-item:hover {
+      transform: scale(1.05);
     }
 
     .photo-preview img {
       width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      height: 150px;
+      object-fit: cover;
+      display: block;
     }
 
-    button {
-      background-color: #000080;
-      color: white;
-      border: none;
-      padding: 12px;
+    .button-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 18px 30px;
       font-size: 16px;
-      border-radius: 5px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
       cursor: pointer;
-      width: 100%;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #000080, #4169E1);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(0, 0, 128, 0.4);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(231, 76, 60, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .form-container {
+        padding: 25px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .header {
+        padding: 20px;
+      }
+
+      .button-container {
+        grid-template-columns: 1fr;
+      }
+
+      .photo-preview {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+    }
+
+    @media (max-width: 480px) {
+      .form-container {
+        padding: 20px;
+      }
+
+      input, select, textarea {
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      .btn {
+        padding: 15px 20px;
+        font-size: 14px;
+      }
+    }
+
+    /* Loading Animation */
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+      position: relative;
+    }
+
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      border: 2px solid #fff;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Success Animation */
+    .success-message {
+      background: linear-gradient(135deg, #00b894, #00a085);
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 20px;
+      text-align: center;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.3s ease;
+    }
+
+    .success-message.show {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
 
-<h1>Secusystem</h1>
+<div class="container">
+  <div class="header">
+    <h1>Secusystem</h1>
+    <p>Sistema de Gestión GPS - Formulario de Servicio</p>
+  </div>
 
-<form id="gps-form">
-  <label>Nombre del Cliente:</label><input type="text" id="nombre" />
-  <label>Cuenta Protrack:</label><input type="text" id="cuenta" />
-  <label>Teléfono:</label><input type="text" id="telefono" />
-  <label>Email:</label><input type="email" id="email" />
-  <label>Modelo GPS:</label><input type="text" id="modelo" />
-  <label>IMEI:</label><input type="text" id="imei" />
-  <label>SIM:</label><input type="text" id="sim" />
-  <label>Técnico:</label><input type="text" id="tecnico" />
-  <label>Fecha de Instalación:</label><input type="date" id="fecha" />
-  <label>Marca Vehículo:</label><input type="text" id="marca" />
-  <label>Modelo Vehículo:</label><input type="text" id="modeloVehiculo" />
-  <label>Año:</label><input type="text" id="anio" />
-  <label>Tipo de Servicio:</label>
-  <select id="tipo">
-    <option>Instalación</option>
-    <option>Desmonto</option>
-    <option>Reinstalación</option>
-    <option>Revisión</option>
-  </select>
-  <label>Corte:</label>
-  <select id="corte">
-    <option>Bomba</option>
-    <option>Ignición</option>
-    <option>Corriente Continua</option>
-    <option>Sin Paro</option>
-  </select>
-  <label>Costo del Servicio:</label><input type="text" id="costo" placeholder="$0.00" />
-  <label>Renta:</label><input type="text" id="renta" placeholder="$0.00" />
-  <label>Comentarios:</label><textarea id="descripcion"></textarea>
-  <label>Fotos:</label><input type="file" id="fotos" accept="image/*" multiple />
-  <div class="photo-preview" id="preview"></div>
-  <button type="button" onclick="descargarPDF()">Descargar PDF</button>
-</form>
+  <div class="form-container">
+    <form id="gps-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>👤 Nombre del Cliente:</label>
+          <input type="text" id="nombre" placeholder="Ingrese el nombre completo" />
+        </div>
+        
+        <div class="form-group">
+          <label>🔢 Cuenta Protrack:</label>
+          <input type="text" id="cuenta" placeholder="Número de cuenta" />
+        </div>
+        
+        <div class="form-group">
+          <label>📞 Teléfono:</label>
+          <input type="tel" id="telefono" placeholder="(55) 1234-5678" />
+        </div>
+        
+        <div class="form-group">
+          <label>📧 Email:</label>
+          <input type="email" id="email" placeholder="ejemplo@correo.com" />
+        </div>
+        
+        <div class="form-group">
+          <label>📱 Modelo GPS:</label>
+          <input type="text" id="modelo" placeholder="Modelo del dispositivo" />
+        </div>
+        
+        <div class="form-group">
+          <label>🔢 IMEI:</label>
+          <input type="text" id="imei" placeholder="Número IMEI" />
+        </div>
+        
+        <div class="form-group">
+          <label>📋 SIM:</label>
+          <input type="text" id="sim" placeholder="Número de SIM" />
+        </div>
+        
+        <div class="form-group">
+          <label>👨‍🔧 Técnico:</label>
+          <input type="text" id="tecnico" placeholder="Nombre del técnico" />
+        </div>
+        
+        <div class="form-group">
+          <label>📅 Fecha de Instalación:</label>
+          <input type="date" id="fecha" />
+        </div>
+        
+        <div class="form-group">
+          <label>🚗 Marca Vehículo:</label>
+          <input type="text" id="marca" placeholder="Toyota, Ford, etc." />
+        </div>
+        
+        <div class="form-group">
+          <label>🏷️ Modelo Vehículo:</label>
+          <input type="text" id="modeloVehiculo" placeholder="Corolla, Focus, etc." />
+        </div>
+        
+        <div class="form-group">
+          <label>📅 Año:</label>
+          <input type="text" id="anio" placeholder="2020" />
+        </div>
+        
+        <div class="form-group">
+          <label>⚙️ Tipo de Servicio:</label>
+          <select id="tipo">
+            <option>Instalación</option>
+            <option>Desmonto</option>
+            <option>Reinstalación</option>
+            <option>Revisión</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>🔧 Corte:</label>
+          <select id="corte">
+            <option>Bomba</option>
+            <option>Ignición</option>
+            <option>Corriente Continua</option>
+            <option>Sin Paro</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>💰 Costo del Servicio:</label>
+          <input type="text" id="costo" placeholder="$0.00" />
+        </div>
+        
+        <div class="form-group">
+          <label>🏠 Renta:</label>
+          <input type="text" id="renta" placeholder="$0.00" />
+        </div>
+        
+        <div class="form-group full-width">
+          <label>💬 Comentarios:</label>
+          <textarea id="descripcion" placeholder="Descripción detallada del servicio realizado..."></textarea>
+        </div>
+        
+        <div class="form-group full-width">
+          <label>📸 Fotos:</label>
+          <div class="file-input-container">
+            <input type="file" id="fotos" accept="image/*" multiple class="file-input" />
+            <label for="fotos" class="file-input-label">
+              📁 Seleccionar Fotos
+            </label>
+          </div>
+          <div class="photo-preview" id="preview"></div>
+        </div>
+      </div>
+      
+      <div class="button-container">
+        <button type="button" class="btn btn-primary" onclick="descargarPDF()">
+          📄 Descargar PDF
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="limpiarDatos()">
+          🗑️ Limpiar Datos
+        </button>
+      </div>
+      
+      <div id="success-message" class="success-message">
+        ✅ Datos limpiados correctamente
+      </div>
+    </form>
+  </div>
+</div>
 
 <script>
   const { jsPDF } = window.jspdf;
 
+  // Preview de fotos mejorado
   document.getElementById('fotos').addEventListener('change', function () {
     const preview = document.getElementById('preview');
     preview.innerHTML = '';
-    Array.from(this.files).forEach(file => {
+    
+    Array.from(this.files).forEach((file, index) => {
       const reader = new FileReader();
       reader.onload = function (e) {
+        const photoItem = document.createElement('div');
+        photoItem.className = 'photo-item';
+        
         const img = document.createElement('img');
         img.src = e.target.result;
-        preview.appendChild(img);
+        img.alt = `Foto ${index + 1}`;
+        
+        photoItem.appendChild(img);
+        preview.appendChild(photoItem);
       };
       reader.readAsDataURL(file);
     });
   });
 
-  function descargarPDF() {
-    const doc = new jsPDF();
-    const cuenta = document.getElementById('cuenta').value.trim() || 'reporte';
-    let y = 10;
-
-    doc.setFontSize(16);
-    doc.setTextColor(0, 0, 128);
-    doc.text("Secusystem", 105, y, null, null, "center");
-
-    doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0);
-    y += 10;
-
-    function writeField(label, value) {
-      doc.setFont(undefined, "bold");
-      doc.text(`${label}:`, 10, y);
-      doc.setFont(undefined, "normal");
-      doc.text(`${value || 'Sin datos'}`, 60, y);
-      y += 8;
-    }
-
-    writeField("Nombre del Cliente", document.getElementById("nombre").value);
-    writeField("Cuenta Protrack", cuenta);
-    writeField("Teléfono", document.getElementById("telefono").value);
-    writeField("Email", document.getElementById("email").value);
-    writeField("Modelo GPS", document.getElementById("modelo").value);
-    writeField("IMEI", document.getElementById("imei").value);
-    writeField("SIM", document.getElementById("sim").value);
-    writeField("Técnico", document.getElementById("tecnico").value);
-    writeField("Fecha de Instalación", document.getElementById("fecha").value);
-    writeField("Marca Vehículo", document.getElementById("marca").value);
-    writeField("Modelo Vehículo", document.getElementById("modeloVehiculo").value);
-    writeField("Año", document.getElementById("anio").value);
-    writeField("Tipo de Servicio", document.getElementById("tipo").value);
-    writeField("Corte", document.getElementById("corte").value);
-    writeField("Costo del Servicio", "$" + document.getElementById("costo").value);
-    writeField("Renta", "$" + document.getElementById("renta").value);
-    writeField("Comentarios", document.getElementById("descripcion").value);
-
-    const files = document.getElementById("fotos").files;
-    let x = 10;
-    if (files.length > 0) {
-      y += 5;
-      doc.setFont(undefined, "bold");
-      doc.text("Fotos:", 10, y);
-      y += 5;
-    }
-
-    Array.from(files).slice(0, 4).forEach((file, index) => {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        doc.addImage(e.target.result, "JPEG", x, y, 60, 45);
-        x += 65;
-        if ((index + 1) % 2 === 0) {
-          x = 10;
-          y += 50;
-        }
-        if (index === files.length - 1) {
-          doc.save(`formulario_${cuenta}.pdf`);
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-
-    if (files.length === 0) {
-      doc.save(`formulario_${cuenta}.pdf`);
+  // Función para limpiar todos los datos
+  function limpiarDatos() {
+    // Confirmar acción
+    if (confirm('¿Estás seguro de que deseas limpiar todos los datos del formulario?')) {
+      // Limpiar todos los inputs de texto
+      const textInputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="date"]');
+      textInputs.forEach(input => input.value = '');
+      
+      // Resetear selects a su primera opción
+      const selects = document.querySelectorAll('select');
+      selects.forEach(select => select.selectedIndex = 0);
+      
+      // Limpiar textarea
+      const textarea = document.querySelector('textarea');
+      if (textarea) textarea.value = '';
+      
+      // Limpiar input de archivos y preview
+      const fileInput = document.getElementById('fotos');
+      fileInput.value = '';
+      document.getElementById('preview').innerHTML = '';
+      
+      // Mostrar mensaje de éxito
+      mostrarMensajeExito();
     }
   }
+
+  // Función para mostrar mensaje de éxito
+  function mostrarMensajeExito() {
+    const mensaje = document.getElementById('success-message');
+    mensaje.classList.add('show');
+    
+    setTimeout(() => {
+      mensaje.classList.remove('show');
+    }, 3000);
+  }
+
+  // Función mejorada para descargar PDF
+  function descargarPDF() {
+    const btnDescargar = document.querySelector('.btn-primary');
+    btnDescargar.classList.add('loading');
+    btnDescargar.textContent = 'Generando PDF...';
+    
+    setTimeout(() => {
+      const doc = new jsPDF();
+      const cuenta = document.getElementById('cuenta').value.trim() || 'reporte';
+      let y = 15;
+
+      // Encabezado mejorado
+      doc.setFontSize(18);
+      doc.setTextColor(0, 0, 128);
+      doc.text("SECUSYSTEM", 105, y, null, null, "center");
+      
+      doc.setFontSize(12);
+      doc.setTextColor(100, 100, 100);
+      y += 8;
+      doc.text("Sistema de Gestión GPS - Reporte de Servicio", 105, y, null, null, "center");
+
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      y += 15;
+
+      function writeField(label, value) {
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.setFont(undefined, "bold");
+        doc.text(`${label}:`, 10, y);
+        doc.setFont(undefined, "normal");
+        doc.text(`${value || 'Sin datos'}`, 70, y);
+        y += 8;
+      }
+
+      // Información del cliente
+      doc.setFont(undefined, "bold");
+      doc.setFontSize(12);
+      doc.text("INFORMACIÓN DEL CLIENTE", 10, y);
+      y += 10;
+      doc.setFontSize(10);
+
+      writeField("Nombre del Cliente", document.getElementById("nombre").value);
+      writeField("Cuenta Protrack", cuenta);
+      writeField("Teléfono", document.getElementById("telefono").value);
+      writeField("Email", document.getElementById("email").value);
+
+      y += 5;
+      doc.setFont(undefined, "bold");
+      doc.setFontSize(12);
+      doc.text("INFORMACIÓN DEL EQUIPO", 10, y);
+      y += 10;
+      doc.setFontSize(10);
+
+      writeField("Modelo GPS", document.getElementById("modelo").value);
+      writeField("IMEI", document.getElementById("imei").value);
+      writeField("SIM", document.getElementById("sim").value);
+
+      y += 5;
+      doc.setFont(undefined, "bold");
+      doc.setFontSize(12);
+      doc.text("INFORMACIÓN DEL SERVICIO", 10, y);
+      y += 10;
+      doc.setFontSize(10);
+
+      writeField("Técnico", document.getElementById("tecnico").value);
+      writeField("Fecha de Instalación", document.getElementById("fecha").value);
+      writeField("Tipo de Servicio", document.getElementById("tipo").value);
+      writeField("Corte", document.getElementById("corte").value);
+      writeField("Costo del Servicio", "$" + document.getElementById("costo").value);
+      writeField("Renta", "$" + document.getElementById("renta").value);
+
+      y += 5;
+      doc.setFont(undefined, "bold");
+      doc.setFontSize(12);
+      doc.text("INFORMACIÓN DEL VEHÍCULO", 10, y);
+      y += 10;
+      doc.setFontSize(10);
+
+      writeField("Marca Vehículo", document.getElementById("marca").value);
+      writeField("Modelo Vehículo", document.getElementById("modeloVehiculo").value);
+      writeField("Año", document.getElementById("anio").value);
+
+      const comentarios = document.getElementById("descripcion").value;
+      if (comentarios) {
+        y += 5;
+        doc.setFont(undefined, "bold");
+        doc.setFontSize(12);
+        doc.text("COMENTARIOS", 10, y);
+        y += 10;
+        doc.setFontSize(10);
+        doc.setFont(undefined, "normal");
+        
+        const lineas = doc.splitTextToSize(comentarios, 180);
+        lineas.forEach(linea => {
+          if (y > 270) {
+            doc.addPage();
+            y = 20;
+          }
+          doc.text(linea, 10, y);
+          y += 6;
+        });
+      }
+
+      const files = document.getElementById("fotos").files;
+      if (files.length > 0) {
+        doc.addPage();
+        y = 20;
+        doc.setFont(undefined, "bold");
+        doc.setFontSize(12);
+        doc.text("FOTOGRAFÍAS DEL SERVICIO", 10, y);
+        y += 15;
+        
+        let x = 10;
+        let fotosAgregadas = 0;
+        
+        Array.from(files).slice(0, 6).forEach((file, index) => {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            try {
+              doc.addImage(e.target.result, "JPEG", x, y, 80, 60);
+              x += 90;
+              
+              if ((index + 1) % 2 === 0) {
+                x = 10;
+                y += 70;
+              }
+              
+              fotosAgregadas++;
+              if (fotosAgregadas === Math.min(files.length, 6)) {
+                finalizarPDF();
+              }
+            } catch (error) {
+              console.log('Error al agregar imagen:', error);
+              fotosAgregadas++;
+              if (fotosAgregadas === Math.min(files.length, 6)) {
+                finalizarPDF();
+              }
+            }
+          };
+          reader.readAsDataURL(file);
+        });
+      } else {
+        finalizarPDF();
+      }
+
+      function finalizarPDF() {
+        doc.save(`formulario_GPS_${cuenta}_${new Date().toISOString().split('T')[0]}.pdf`);
+        
+        // Restaurar botón
+        btnDescargar.classList.remove('loading');
+        btnDescargar.textContent = '📄 Descargar PDF';
+      }
+
+      if (files.length === 0) {
+        finalizarPDF();
+      }
+    }, 1000);
+  }
+
+  // Auto-guardar fecha actual si está vacía
+  document.addEventListener('DOMContentLoaded', function() {
+    const fechaInput = document.getElementById('fecha');
+    if (!fechaInput.value) {
+      const hoy = new Date().toISOString().split('T')[0];
+      fechaInput.value = hoy;
+    }
+  });
+
+  // Formateo automático de campos monetarios
+  document.getElementById('costo').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/[^\d.]/g, '');
+    if (value) {
+      e.target.value = value;
+    }
+  });
+
+  document.getElementById('renta').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/[^\d.]/g, '');
+    if (value) {
+      e.target.value = value;
+    }
+  });
 </script>
 
 </body>
 </html>
-
