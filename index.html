@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Hoja Servicio GPS</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    form {
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 800px;
+      margin: auto;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      background: #3498db;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Hoja de Servicio GPS</h2>
+<form id="gpsForm">
+  <label>Nombre del Cliente:</label>
+  <input type="text" id="nombre">
+
+  <label>Cuenta Protrack:</label>
+  <input type="text" id="protrack">
+
+  <label>Teléfono:</label>
+  <input type="text" id="telefono">
+
+  <label>Email:</label>
+  <input type="email" id="email">
+
+  <label>Modelo GPS:</label>
+  <input type="text" id="modeloGPS">
+
+  <label>IMEI:</label>
+  <input type="text" id="imei">
+
+  <label>SIM:</label>
+  <input type="text" id="sim">
+
+  <label>Técnico:</label>
+  <input type="text" id="tecnico">
+
+  <label>Fecha de Instalación:</label>
+  <input type="date" id="fecha">
+
+  <label>Marca:</label>
+  <input type="text" id="marca">
+
+  <label>Modelo:</label>
+  <input type="text" id="modeloVehiculo">
+
+  <label>Año:</label>
+  <input type="text" id="anio">
+
+  <label>Costo Servicio:</label>
+  <input type="text" id="costo">
+
+  <label>Renta:</label>
+  <input type="text" id="renta">
+
+  <label>Tipo de Servicio:</label>
+  <select id="tipoServicio">
+    <option>Instalación</option>
+    <option>Desmonto</option>
+    <option>Reinstalación</option>
+    <option>Revisión</option>
+  </select>
+
+  <label>Corte:</label>
+  <select id="corte">
+    <option>Bomba</option>
+    <option>Ignición</option>
+    <option>Corriente Continua</option>
+    <option>Sin Paro</option>
+  </select>
+
+  <label>Descripción / Anotaciones:</label>
+  <textarea id="descripcion" rows="4"></textarea>
+
+  <label>Subir hasta 4 imágenes:</label>
+  <input type="file" id="imagenes" multiple accept="image/*">
+
+  <button type="button" onclick="generarPDF()">Descargar PDF</button>
+</form>
+
+<script>
+  async function generarPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    let x = 10, y = 20, lineHeight = 10;
+
+    function addLine(label, value) {
+      doc.setFontSize(11);
+      doc.text(`${label}  ${value}`, x, y);
+      y += lineHeight;
+    }
+
+    // Obtener valores
+    const nombre = document.getElementById("nombre").value;
+    const protrack = document.getElementById("protrack").value;
+    const telefono = document.getElementById("telefono").value;
+    const email = document.getElementById("email").value;
+    const modeloGPS = document.getElementById("modeloGPS").value;
+    const imei = document.getElementById("imei").value;
+    const sim = document.getElementById("sim").value;
+    const tecnico = document.getElementById("tecnico").value;
+    const fecha = document.getElementById("fecha").value;
+    const marca = document.getElementById("marca").value;
+    const modeloVehiculo = document.getElementById("modeloVehiculo").value;
+    const anio = document.getElementById("anio").value;
+    const costo = document.getElementById("costo").value;
+    const renta = document.getElementById("renta").value;
+    const tipoServicio = document.getElementById("tipoServicio").value;
+    const corte = document.getElementById("corte").value;
+    const descripcion = document.getElementById("descripcion").value;
+
+    addLine("Nombre del Cliente:", nombre);
+    addLine("Cuenta Protrack:", protrack);
+    addLine("Teléfono:", telefono);
+    addLine("Email:", email);
+    addLine("Modelo GPS:", modeloGPS);
+    addLine("IMEI:", imei);
+    addLine("SIM:", sim);
+    addLine("Técnico:", tecnico);
+    addLine("Fecha de Instalación:", fecha);
+    addLine("Marca:", marca);
+    addLine("Modelo:", modeloVehiculo);
+    addLine("Año:", anio);
+    addLine("Costo Servicio:", `$${costo}`);
+    addLine("Renta:", `$${renta}`);
+    addLine("Tipo de Servicio:", tipoServicio);
+    addLine("Corte:", corte);
+    addLine("Descripción:", descripcion);
+
+    // Agregar imágenes
+    const files = document.getElementById("imagenes").files;
+    let imgY = y + 10;
+
+    for (let i = 0; i < Math.min(files.length, 4); i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      await new Promise(resolve => {
+        reader.onload = function (e) {
+          const img = new Image();
+          img.onload = function () {
+            const imgWidth = 60;
+            const imgHeight = (img.height * imgWidth) / img.width;
+            if (imgY + imgHeight > 280) {
+              doc.addPage();
+              imgY = 20;
+            }
+            doc.addImage(img, 'JPEG', 10, imgY, imgWidth, imgHeight);
+            imgY += imgHeight + 5;
+            resolve();
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    const nombreArchivo = protrack || "Servicio_GPS";
+    doc.save(`${nombreArchivo}.pdf`);
+  }
+</script>
+</body>
+</html>
