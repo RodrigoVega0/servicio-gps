@@ -502,7 +502,7 @@
     }, 3000);
   }
 
-  // Función mejorada para descargar PDF
+  // Función mejorada para descargar PDF con diseño profesional
   function descargarPDF() {
     const btnDescargar = document.querySelector('.btn-primary');
     btnDescargar.classList.add('loading');
@@ -511,135 +511,213 @@
     setTimeout(() => {
       const doc = new jsPDF();
       const cuenta = document.getElementById('cuenta').value.trim() || 'reporte';
-      let y = 15;
+      let y = 20;
 
-      // Encabezado mejorado
-      doc.setFontSize(18);
-      doc.setTextColor(0, 0, 128);
-      doc.text("SECUSYSTEM", 105, y, null, null, "center");
+      // Colores profesionales en azul
+      const azulPrimario = [13, 71, 161]; // Azul oscuro profesional
+      const azulSecundario = [25, 118, 210]; // Azul medio
+      const azulClaro = [144, 202, 249]; // Azul claro
+      const grisTexto = [66, 66, 66]; // Gris para texto
+      const grisClarito = [238, 238, 238]; // Gris muy claro para fondos
+
+      // Fondo de encabezado con gradiente simulado
+      doc.setFillColor(azulPrimario[0], azulPrimario[1], azulPrimario[2]);
+      doc.rect(0, 0, 210, 45, 'F');
+      
+      // Línea decorativa
+      doc.setFillColor(azulClaro[0], azulClaro[1], azulClaro[2]);
+      doc.rect(0, 40, 210, 5, 'F');
+
+      // Logo/Título principal
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(24);
+      doc.setFont(undefined, "bold");
+      doc.text("SECUSYSTEM", 105, 20, null, null, "center");
       
       doc.setFontSize(12);
-      doc.setTextColor(100, 100, 100);
-      y += 8;
-      doc.text("Sistema de Gestión GPS - Reporte de Servicio", 105, y, null, null, "center");
-
+      doc.setFont(undefined, "normal");
+      doc.text("Sistema de Gestión GPS", 105, 28, null, null, "center");
+      
       doc.setFontSize(10);
-      doc.setTextColor(0, 0, 0);
-      y += 15;
+      doc.text("Reporte de Servicio Técnico", 105, 35, null, null, "center");
 
-      function writeField(label, value) {
-        if (y > 270) {
-          doc.addPage();
-          y = 20;
-        }
+      // Información de fecha y número de reporte
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(8);
+      const fechaActual = new Date().toLocaleDateString('es-ES');
+      const horaActual = new Date().toLocaleTimeString('es-ES');
+      doc.text(`Fecha: ${fechaActual} | Hora: ${horaActual}`, 15, 52);
+      doc.text(`Reporte No. ${cuenta.toUpperCase()}-${Date.now().toString().slice(-6)}`, 15, 58);
+
+      y = 75;
+
+      // Función mejorada para escribir campos con diseño profesional
+      function writeSection(titulo, campos) {
+        // Encabezado de sección
+        doc.setFillColor(azulSecundario[0], azulSecundario[1], azulSecundario[2]);
+        doc.rect(10, y - 5, 190, 12, 'F');
+        
+        doc.setTextColor(255, 255, 255);
         doc.setFont(undefined, "bold");
-        doc.text(`${label}:`, 10, y);
-        doc.setFont(undefined, "normal");
-        doc.text(`${value || 'Sin datos'}`, 70, y);
-        y += 8;
+        doc.setFontSize(11);
+        doc.text(titulo, 15, y + 2);
+        
+        y += 18;
+        
+        // Campos de la sección
+        doc.setTextColor(grisTexto[0], grisTexto[1], grisTexto[2]);
+        doc.setFontSize(9);
+        
+        campos.forEach((campo, index) => {
+          if (y > 260) {
+            doc.addPage();
+            y = 30;
+          }
+          
+          // Fondo alternado para mejor legibilidad
+          if (index % 2 === 0) {
+            doc.setFillColor(grisClarito[0], grisClarito[1], grisClarito[2]);
+            doc.rect(10, y - 3, 190, 10, 'F');
+          }
+          
+          doc.setFont(undefined, "bold");
+          doc.text(`${campo.label}:`, 15, y + 2);
+          
+          doc.setFont(undefined, "normal");
+          doc.text(`${campo.value || 'Sin datos'}`, 80, y + 2);
+          
+          y += 10;
+        });
+        
+        y += 8; // Espacio entre secciones
       }
 
-      // Información del cliente
-      doc.setFont(undefined, "bold");
-      doc.setFontSize(12);
-      doc.text("INFORMACIÓN DEL CLIENTE", 10, y);
-      y += 10;
-      doc.setFontSize(10);
+      // Sección: Información del Cliente
+      writeSection("📋 INFORMACIÓN DEL CLIENTE", [
+        { label: "Nombre del Cliente", value: document.getElementById("nombre").value },
+        { label: "Cuenta Protrack", value: cuenta },
+        { label: "Teléfono", value: document.getElementById("telefono").value },
+        { label: "Email", value: document.getElementById("email").value }
+      ]);
 
-      writeField("Nombre del Cliente", document.getElementById("nombre").value);
-      writeField("Cuenta Protrack", cuenta);
-      writeField("Teléfono", document.getElementById("telefono").value);
-      writeField("Email", document.getElementById("email").value);
+      // Sección: Información del Equipo
+      writeSection("⚙️ INFORMACIÓN DEL EQUIPO GPS", [
+        { label: "Modelo GPS", value: document.getElementById("modelo").value },
+        { label: "IMEI", value: document.getElementById("imei").value },
+        { label: "Número SIM", value: document.getElementById("sim").value }
+      ]);
 
-      y += 5;
-      doc.setFont(undefined, "bold");
-      doc.setFontSize(12);
-      doc.text("INFORMACIÓN DEL EQUIPO", 10, y);
-      y += 10;
-      doc.setFontSize(10);
+      // Sección: Información del Servicio
+      writeSection("🔧 INFORMACIÓN DEL SERVICIO", [
+        { label: "Técnico Asignado", value: document.getElementById("tecnico").value },
+        { label: "Fecha de Instalación", value: document.getElementById("fecha").value },
+        { label: "Tipo de Servicio", value: document.getElementById("tipo").value },
+        { label: "Tipo de Corte", value: document.getElementById("corte").value },
+        { label: "Costo del Servicio", value: "$" + document.getElementById("costo").value },
+        { label: "Renta Mensual", value: "$" + document.getElementById("renta").value }
+      ]);
 
-      writeField("Modelo GPS", document.getElementById("modelo").value);
-      writeField("IMEI", document.getElementById("imei").value);
-      writeField("SIM", document.getElementById("sim").value);
+      // Sección: Información del Vehículo
+      writeSection("🚗 INFORMACIÓN DEL VEHÍCULO", [
+        { label: "Marca", value: document.getElementById("marca").value },
+        { label: "Modelo", value: document.getElementById("modeloVehiculo").value },
+        { label: "Año", value: document.getElementById("anio").value }
+      ]);
 
-      y += 5;
-      doc.setFont(undefined, "bold");
-      doc.setFontSize(12);
-      doc.text("INFORMACIÓN DEL SERVICIO", 10, y);
-      y += 10;
-      doc.setFontSize(10);
-
-      writeField("Técnico", document.getElementById("tecnico").value);
-      writeField("Fecha de Instalación", document.getElementById("fecha").value);
-      writeField("Tipo de Servicio", document.getElementById("tipo").value);
-      writeField("Corte", document.getElementById("corte").value);
-      writeField("Costo del Servicio", "$" + document.getElementById("costo").value);
-      writeField("Renta", "$" + document.getElementById("renta").value);
-
-      y += 5;
-      doc.setFont(undefined, "bold");
-      doc.setFontSize(12);
-      doc.text("INFORMACIÓN DEL VEHÍCULO", 10, y);
-      y += 10;
-      doc.setFontSize(10);
-
-      writeField("Marca Vehículo", document.getElementById("marca").value);
-      writeField("Modelo Vehículo", document.getElementById("modeloVehiculo").value);
-      writeField("Año", document.getElementById("anio").value);
-
+      // Sección: Comentarios
       const comentarios = document.getElementById("descripcion").value;
       if (comentarios) {
-        y += 5;
+        if (y > 240) {
+          doc.addPage();
+          y = 30;
+        }
+        
+        // Encabezado de comentarios
+        doc.setFillColor(azulSecundario[0], azulSecundario[1], azulSecundario[2]);
+        doc.rect(10, y - 5, 190, 12, 'F');
+        
+        doc.setTextColor(255, 255, 255);
         doc.setFont(undefined, "bold");
-        doc.setFontSize(12);
-        doc.text("COMENTARIOS", 10, y);
-        y += 10;
-        doc.setFontSize(10);
+        doc.setFontSize(11);
+        doc.text("💬 COMENTARIOS Y OBSERVACIONES", 15, y + 2);
+        
+        y += 20;
+        
+        // Fondo para comentarios
+        const lineasComentarios = doc.splitTextToSize(comentarios, 170);
+        const alturaComentarios = lineasComentarios.length * 6 + 10;
+        
+        doc.setFillColor(grisClarito[0], grisClarito[1], grisClarito[2]);
+        doc.rect(10, y - 5, 190, alturaComentarios, 'F');
+        
+        doc.setTextColor(grisTexto[0], grisTexto[1], grisTexto[2]);
+        doc.setFontSize(9);
         doc.setFont(undefined, "normal");
         
-        const lineas = doc.splitTextToSize(comentarios, 180);
-        lineas.forEach(linea => {
+        lineasComentarios.forEach(linea => {
           if (y > 270) {
             doc.addPage();
-            y = 20;
+            y = 30;
           }
-          doc.text(linea, 10, y);
+          doc.text(linea, 15, y);
           y += 6;
         });
+        
+        y += 10;
       }
 
+      // Sección: Fotografías
       const files = document.getElementById("fotos").files;
       if (files.length > 0) {
         doc.addPage();
-        y = 20;
+        y = 30;
+        
+        // Encabezado de fotografías
+        doc.setFillColor(azulSecundario[0], azulSecundario[1], azulSecundario[2]);
+        doc.rect(10, y - 5, 190, 12, 'F');
+        
+        doc.setTextColor(255, 255, 255);
         doc.setFont(undefined, "bold");
-        doc.setFontSize(12);
-        doc.text("FOTOGRAFÍAS DEL SERVICIO", 10, y);
-        y += 15;
+        doc.setFontSize(11);
+        doc.text("📸 FOTOGRAFÍAS DEL SERVICIO", 15, y + 2);
         
-        let x = 10;
+        y += 25;
+        
+        let x = 15;
         let fotosAgregadas = 0;
+        const fotosMaximas = Math.min(files.length, 6);
         
-        Array.from(files).slice(0, 6).forEach((file, index) => {
+        Array.from(files).slice(0, fotosMaximas).forEach((file, index) => {
           const reader = new FileReader();
           reader.onload = function (e) {
             try {
+              // Marco decorativo para cada foto
+              doc.setFillColor(azulClaro[0], azulClaro[1], azulClaro[2]);
+              doc.rect(x - 2, y - 2, 84, 64, 'F');
+              
               doc.addImage(e.target.result, "JPEG", x, y, 80, 60);
-              x += 90;
+              
+              // Etiqueta de la foto
+              doc.setTextColor(azulPrimario[0], azulPrimario[1], azulPrimario[2]);
+              doc.setFontSize(8);
+              doc.setFont(undefined, "bold");
+              doc.text(`Foto ${index + 1}`, x + 2, y + 68);
+              
+              x += 95;
               
               if ((index + 1) % 2 === 0) {
-                x = 10;
-                y += 70;
+                x = 15;
+                y += 80;
               }
               
               fotosAgregadas++;
-              if (fotosAgregadas === Math.min(files.length, 6)) {
+              if (fotosAgregadas === fotosMaximas) {
                 finalizarPDF();
               }
             } catch (error) {
               console.log('Error al agregar imagen:', error);
               fotosAgregadas++;
-              if (fotosAgregadas === Math.min(files.length, 6)) {
+              if (fotosAgregadas === fotosMaximas) {
                 finalizarPDF();
               }
             }
@@ -651,7 +729,23 @@
       }
 
       function finalizarPDF() {
-        doc.save(`formulario_GPS_${cuenta}_${new Date().toISOString().split('T')[0]}.pdf`);
+        // Pie de página en todas las páginas
+        const totalPaginas = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPaginas; i++) {
+          doc.setPage(i);
+          
+          // Línea decorativa inferior
+          doc.setFillColor(azulClaro[0], azulClaro[1], azulClaro[2]);
+          doc.rect(0, 285, 210, 12, 'F');
+          
+          doc.setTextColor(azulPrimario[0], azulPrimario[1], azulPrimario[2]);
+          doc.setFontSize(8);
+          doc.setFont(undefined, "normal");
+          doc.text(`Documento de uso interno | Firma: RVG`, 15, 291);
+          doc.text(`Página ${i} de ${totalPaginas}`, 180, 291);
+        }
+        
+        doc.save(`GPS_Reporte_${cuenta}_${new Date().toISOString().split('T')[0]}.pdf`);
         
         // Restaurar botón
         btnDescargar.classList.remove('loading');
