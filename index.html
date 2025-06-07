@@ -1,108 +1,108 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Hoja Servicio GPS</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario GPS - Secusystem</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
-      background: #f0f4f8;
-      padding: 20px;
+      background: #f4f4f4;
+      color: #000;
+      margin: 0;
+      padding: 10px;
     }
-    h2 {
+
+    h1 {
       text-align: center;
-      color: #2c3e50;
+      color: #000080;
+      font-size: 24px;
+      margin-bottom: 20px;
     }
+
     form {
       background: #fff;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      max-width: 800px;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 900px;
       margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
+
     label {
-      display: block;
-      margin: 15px 0 5px;
       font-weight: bold;
+      margin-bottom: 4px;
+      display: block;
     }
+
     input, select, textarea {
       width: 100%;
-      padding: 8px 10px;
+      padding: 10px;
+      margin-bottom: 15px;
       border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 4px;
     }
+
+    textarea {
+      height: 60px;
+      resize: vertical;
+    }
+
+    .photo-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .photo-preview img {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
     button {
-      background: #3498db;
+      background-color: #000080;
       color: white;
-      padding: 12px 20px;
       border: none;
-      border-radius: 8px;
+      padding: 12px;
       font-size: 16px;
+      border-radius: 5px;
       cursor: pointer;
-      margin-top: 20px;
-    }
-    button:hover {
-      background: #2980b9;
+      width: 100%;
     }
   </style>
 </head>
 <body>
 
-<h2>Hoja de Servicio GPS</h2>
-<form id="gpsForm">
-  <label>Nombre del Cliente:</label>
-  <input type="text" id="nombre">
+<h1>Secusystem</h1>
 
-  <label>Cuenta Protrack:</label>
-  <input type="text" id="protrack">
-
-  <label>Teléfono:</label>
-  <input type="text" id="telefono">
-
-  <label>Email:</label>
-  <input type="email" id="email">
-
-  <label>Modelo GPS:</label>
-  <input type="text" id="modeloGPS">
-
-  <label>IMEI:</label>
-  <input type="text" id="imei">
-
-  <label>SIM:</label>
-  <input type="text" id="sim">
-
-  <label>Técnico:</label>
-  <input type="text" id="tecnico">
-
-  <label>Fecha de Instalación:</label>
-  <input type="date" id="fecha">
-
-  <label>Marca:</label>
-  <input type="text" id="marca">
-
-  <label>Modelo:</label>
-  <input type="text" id="modeloVehiculo">
-
-  <label>Año:</label>
-  <input type="text" id="anio">
-
-  <label>Costo Servicio:</label>
-  <input type="text" id="costo">
-
-  <label>Renta:</label>
-  <input type="text" id="renta">
-
+<form id="gps-form">
+  <label>Nombre del Cliente:</label><input type="text" id="nombre" />
+  <label>Cuenta Protrack:</label><input type="text" id="cuenta" />
+  <label>Teléfono:</label><input type="text" id="telefono" />
+  <label>Email:</label><input type="email" id="email" />
+  <label>Modelo GPS:</label><input type="text" id="modelo" />
+  <label>IMEI:</label><input type="text" id="imei" />
+  <label>SIM:</label><input type="text" id="sim" />
+  <label>Técnico:</label><input type="text" id="tecnico" />
+  <label>Fecha de Instalación:</label><input type="date" id="fecha" />
+  <label>Marca Vehículo:</label><input type="text" id="marca" />
+  <label>Modelo Vehículo:</label><input type="text" id="modeloVehiculo" />
+  <label>Año:</label><input type="text" id="anio" />
   <label>Tipo de Servicio:</label>
-  <select id="tipoServicio">
+  <select id="tipo">
     <option>Instalación</option>
     <option>Desmonto</option>
     <option>Reinstalación</option>
     <option>Revisión</option>
   </select>
-
   <label>Corte:</label>
   <select id="corte">
     <option>Bomba</option>
@@ -110,96 +110,101 @@
     <option>Corriente Continua</option>
     <option>Sin Paro</option>
   </select>
-
-  <label>Descripción / Anotaciones:</label>
-  <textarea id="descripcion" rows="4"></textarea>
-
-  <label>Subir hasta 4 imágenes:</label>
-  <input type="file" id="imagenes" multiple accept="image/*">
-
-  <button type="button" onclick="generarPDF()">Descargar PDF</button>
+  <label>Costo del Servicio:</label><input type="text" id="costo" placeholder="$0.00" />
+  <label>Renta:</label><input type="text" id="renta" placeholder="$0.00" />
+  <label>Comentarios:</label><textarea id="descripcion"></textarea>
+  <label>Fotos:</label><input type="file" id="fotos" accept="image/*" multiple />
+  <div class="photo-preview" id="preview"></div>
+  <button type="button" onclick="descargarPDF()">Descargar PDF</button>
 </form>
 
 <script>
-  async function generarPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+  const { jsPDF } = window.jspdf;
 
-    let x = 10, y = 20, lineHeight = 10;
-
-    function addLine(label, value) {
-      doc.setFontSize(11);
-      doc.text(`${label}  ${value}`, x, y);
-      y += lineHeight;
-    }
-
-    // Obtener valores
-    const nombre = document.getElementById("nombre").value;
-    const protrack = document.getElementById("protrack").value;
-    const telefono = document.getElementById("telefono").value;
-    const email = document.getElementById("email").value;
-    const modeloGPS = document.getElementById("modeloGPS").value;
-    const imei = document.getElementById("imei").value;
-    const sim = document.getElementById("sim").value;
-    const tecnico = document.getElementById("tecnico").value;
-    const fecha = document.getElementById("fecha").value;
-    const marca = document.getElementById("marca").value;
-    const modeloVehiculo = document.getElementById("modeloVehiculo").value;
-    const anio = document.getElementById("anio").value;
-    const costo = document.getElementById("costo").value;
-    const renta = document.getElementById("renta").value;
-    const tipoServicio = document.getElementById("tipoServicio").value;
-    const corte = document.getElementById("corte").value;
-    const descripcion = document.getElementById("descripcion").value;
-
-    addLine("Nombre del Cliente:", nombre);
-    addLine("Cuenta Protrack:", protrack);
-    addLine("Teléfono:", telefono);
-    addLine("Email:", email);
-    addLine("Modelo GPS:", modeloGPS);
-    addLine("IMEI:", imei);
-    addLine("SIM:", sim);
-    addLine("Técnico:", tecnico);
-    addLine("Fecha de Instalación:", fecha);
-    addLine("Marca:", marca);
-    addLine("Modelo:", modeloVehiculo);
-    addLine("Año:", anio);
-    addLine("Costo Servicio:", `$${costo}`);
-    addLine("Renta:", `$${renta}`);
-    addLine("Tipo de Servicio:", tipoServicio);
-    addLine("Corte:", corte);
-    addLine("Descripción:", descripcion);
-
-    // Agregar imágenes
-    const files = document.getElementById("imagenes").files;
-    let imgY = y + 10;
-
-    for (let i = 0; i < Math.min(files.length, 4); i++) {
-      const file = files[i];
+  document.getElementById('fotos').addEventListener('change', function () {
+    const preview = document.getElementById('preview');
+    preview.innerHTML = '';
+    Array.from(this.files).forEach(file => {
       const reader = new FileReader();
-      await new Promise(resolve => {
-        reader.onload = function (e) {
-          const img = new Image();
-          img.onload = function () {
-            const imgWidth = 60;
-            const imgHeight = (img.height * imgWidth) / img.width;
-            if (imgY + imgHeight > 280) {
-              doc.addPage();
-              imgY = 20;
-            }
-            doc.addImage(img, 'JPEG', 10, imgY, imgWidth, imgHeight);
-            imgY += imgHeight + 5;
-            resolve();
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
+      reader.onload = function (e) {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  function descargarPDF() {
+    const doc = new jsPDF();
+    const cuenta = document.getElementById('cuenta').value.trim() || 'reporte';
+    let y = 10;
+
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 128);
+    doc.text("Secusystem", 105, y, null, null, "center");
+
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    y += 10;
+
+    function writeField(label, value) {
+      doc.setFont(undefined, "bold");
+      doc.text(`${label}:`, 10, y);
+      doc.setFont(undefined, "normal");
+      doc.text(`${value || 'Sin datos'}`, 60, y);
+      y += 8;
     }
 
-    const nombreArchivo = protrack || "Servicio_GPS";
-    doc.save(`${nombreArchivo}.pdf`);
+    writeField("Nombre del Cliente", document.getElementById("nombre").value);
+    writeField("Cuenta Protrack", cuenta);
+    writeField("Teléfono", document.getElementById("telefono").value);
+    writeField("Email", document.getElementById("email").value);
+    writeField("Modelo GPS", document.getElementById("modelo").value);
+    writeField("IMEI", document.getElementById("imei").value);
+    writeField("SIM", document.getElementById("sim").value);
+    writeField("Técnico", document.getElementById("tecnico").value);
+    writeField("Fecha de Instalación", document.getElementById("fecha").value);
+    writeField("Marca Vehículo", document.getElementById("marca").value);
+    writeField("Modelo Vehículo", document.getElementById("modeloVehiculo").value);
+    writeField("Año", document.getElementById("anio").value);
+    writeField("Tipo de Servicio", document.getElementById("tipo").value);
+    writeField("Corte", document.getElementById("corte").value);
+    writeField("Costo del Servicio", "$" + document.getElementById("costo").value);
+    writeField("Renta", "$" + document.getElementById("renta").value);
+    writeField("Comentarios", document.getElementById("descripcion").value);
+
+    const files = document.getElementById("fotos").files;
+    let x = 10;
+    if (files.length > 0) {
+      y += 5;
+      doc.setFont(undefined, "bold");
+      doc.text("Fotos:", 10, y);
+      y += 5;
+    }
+
+    Array.from(files).slice(0, 4).forEach((file, index) => {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        doc.addImage(e.target.result, "JPEG", x, y, 60, 45);
+        x += 65;
+        if ((index + 1) % 2 === 0) {
+          x = 10;
+          y += 50;
+        }
+        if (index === files.length - 1) {
+          doc.save(`formulario_${cuenta}.pdf`);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    if (files.length === 0) {
+      doc.save(`formulario_${cuenta}.pdf`);
+    }
   }
 </script>
+
 </body>
 </html>
+
